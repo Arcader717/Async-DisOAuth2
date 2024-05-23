@@ -16,7 +16,8 @@ authors = [
 ]
 dependencies = [
   "requests",
-  "click"
+  "click",
+  "mypy[mypyc]",
 ]
 classifiers = [
   "Intended Audience :: Developers",

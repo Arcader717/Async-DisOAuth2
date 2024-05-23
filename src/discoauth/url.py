@@ -6,8 +6,9 @@ from discoauth.common import generate_token, getToken, htmlEncode, joinUrl, perm
 
 from discoauth.models import UserObj as uObj, GuildObj as gObj
 
-apiUrl = "https://discord.com/api"
+apiUrl: str = "https://discord.com/api"
 
+type PermissionsType = permissionsClass
 
 
 class auth:
@@ -27,21 +28,21 @@ class auth:
         :type scope: List[str]
         :type redirect_uri: str
         """
-        self._client_id = client_id
-        self._scope = scope
-        self._redirect_uri = redirect_uri
+        self._client_id: str = client_id
+        self._scope: List[str] = scope
+        self._redirect_uri: str = redirect_uri
         if permissions is not None:
             if isinstance(permissions, int):
-                self._perms = permissions
+                self._perms: int | None = permissions
             else:
                 self._perms = permissions.value
         else:
-            self._perms = None
+            self._perms: int | None = None
         if len(extras) > 0:
             if "test" in extras:
-                self.test = True
+                self.test: bool = True
         else:
-            self.test = False
+            self.test: bool = False
 
     async def url(self) -> str:
         """
@@ -51,13 +52,13 @@ class auth:
         :returns: The authorization link. Redirect the user to the link and after they authorize, they will return to your redirect URI.
         :rtype: str
         """
-        scope = self._scope
-        redirect_uri = self._redirect_uri
-        client_id = self._client_id
+        scope: List[str] = self._scope
+        redirect_uri: str = self._redirect_uri
+        client_id: str = self._client_id
         if not self.test:
-            state = await generate_token()
+            state: str = await generate_token()
         elif self.test:
-            state = '1'
+            state: str = '1'
         self.strScope = ""
         for s in scope:
             self.strScope += s
@@ -72,7 +73,7 @@ class auth:
 
 class discord:
     def __init__(self,
-                 client_id,
+                 client_id: str,
                  client_secret,
                  scope: list[str],
                  redirect_uri) -> None:
@@ -160,7 +161,7 @@ class discord:
 class bot:
     def __init__(self,
                  client_id,
-                 permissions) -> None:
+                 perms: Type[Permissions] | List[str]) -> None:
         """
         Makes an auth url for bots
         :param client_id: The client id of your bot
@@ -169,10 +170,10 @@ class bot:
         :type permissions: int or List[str] 
         """
         self.id = int(client_id)
-        if permissions is Type[permissions]:
-            self.permissions = permissions.value
+        if perms is Type[Permissions]:
+            self.permissions = perms.value
         else:
-            self.permissions = permissions
+            self.permissions = permissions(perms)
 
     async def url(self) -> str:
         """
@@ -184,7 +185,8 @@ class bot:
         url = f"https://discord.com/api/oauth2/authorize?client_id={self.id}&permissions={self.permissions}&scope=bot"
         return url
 
-class permissions:
+class permissionsClass:
+    value: int
     def __init__(self, permissions=None):
         self.perm_list = [
             "create_instant_invite", "kick_members", "ban_members",
@@ -223,11 +225,11 @@ class permissions:
         else:
             raise ValueError("Invalid permissions format")
 
-    def _apply_permission(self, perm, value=True):
+    def _apply_permission(self, perm: int | str, value=True):
         if isinstance(perm, int):
-            perm_key = bot_perms_key.get(perm)
+            perm_key: int | None = bot_perms.get(str(bot_perms_key.get(int(perm))))
         elif isinstance(perm, str):
-            perm_key = bot_perms.get(perm.upper())
+            perm_key: int | None = bot_perms.get(perm.upper())
 
         if perm_key is None:
             raise ValueError(f"{perm} is not a valid permission")
@@ -237,18 +239,19 @@ class permissions:
         else:
             perm_value = perm_key
 
+        bot_perms_inverse: Dict[int, str] = {v: k for k, v in bot_perms.items()}
         if value:
             self.value |= int(perm_value)
             if isinstance(perm_key, str):
                 setattr(self, perm_key.lower(), True)
             elif isinstance(perm_key, int):
-                setattr(self, perm.lower(), True)
+                setattr(self, bot_perms_inverse[perm_key], True)
         else:
             self.value &= ~perm_value
             if isinstance(perm_key, str):
                 setattr(self, perm_key.lower(), False)
             elif isinstance(perm_key, int):
-                setattr(self, perm.lower(), False)
+                setattr(self, bot_perms_inverse[perm_key], False)
 
     def __getattr__(self, name):
         if name in self.perm_list:
