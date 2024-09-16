@@ -10,3 +10,13 @@ class InvalidPermission(Exception):
             super().__init__("The permission number you passed is invalid")
         elif permissionInt is not None:
             super().__init__(f"The permission number you passed, {permissionInt}, is invalid")
+
+class DiscordException(Exception):
+    """Raised when something unusual happens with the Discord API. Raise with the error message
+    
+    Attributes:
+      message -- The error message returned by discord api
+      """
+    def __init__(self, message: str):
+        super().__init__(f"The following error was raised by Discord API\n\n{message}")
+

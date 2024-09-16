@@ -82,6 +82,65 @@ API Reference
       .. versionchanged:: 2.0
         Renamed to :meth:`discord.user.guilds` from the previous :meth:`discordApi.User.get_user_guilds`
 
+    .. py:method:: modify(username)
+      :async:
+
+      Changes the username or avatar url of the user
+
+      :param username: The username of the user that you would like to modify, this is NOT the user's display name. Defaults to none, and uses the access token as the user
+      :type username: str | None
+      :return: The json returned by Discord API
+
+      .. versionadded:: 2.1
+
+    .. py:method:: leaveGuild(guild)
+      :async:
+
+      Makes a user leave a guild
+
+      :param guild: The id of the guild
+      :type guild: str | int
+      :return: Whether the user had left. Returns true if successful, and false if not
+      :rtype: bool
+
+      .. versionadded:: 2.1
+
+    .. py:method:: dm(id, tokens, nicks)
+      :async:
+      
+      DM a user or group of users
+
+      :param id: The id of the user you want to DM. This does not apply to group DM's
+      :param tokens: The access tokens of the users you would like to DM. This does not apply to DMing a single user
+      :param nicks: The nicks of the users. This does not apply to DMing a single user
+      :type id: str | None = None
+      :type tokens: List[str] | None = None
+      :type nicks: Dict[str, str] | None = None
+      :return: The json response returned by Discord API
+
+      .. versionadded:: 2.1
+
+    .. py:method:: connections(id)
+      :async:
+
+      Can get a user's regular and application connections. Must use the ``connections`` scope for regular connections, and ``role_connections.write`` for application connections
+
+      :param id: The id of the application connected to a user
+      :type: str | None = None
+      :return: The json response returned by Discord API
+
+      .. versionadded:: 2.1
+
+    .. py:method:: modifyConnections(id)
+      :async:
+
+      Modifies a user's application connections
+
+      :param id: The id of the application
+      :return: The json response returned by Discord API
+
+      .. versionadded:: 2.1
+
   .. py:class:: guild(token)
 
     Provides access to the guild links in the Discord API

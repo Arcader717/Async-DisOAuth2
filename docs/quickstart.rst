@@ -58,10 +58,9 @@ Now, we need a new variable, ``client_secret``. Which is your app's client secre
 using the other three variables and ``client_secret`` we can use :class:`discord`. ::
 
   api = discord(client_id, client_secret, scope, redirect_uri)
-  r = await api.token(code)
-  token = r['access_token']
+  token = await api.token(code)
 
-Now, ``token`` is your access token. Save this somewhere safe.
+Now, ``token`` is the response, which can contain a new token. Save this somewhere safe.
 
 Remember, :func:`token` returns a dictionary, containing the entire response, so you can still get the ``refresh_token``
 

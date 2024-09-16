@@ -7,6 +7,25 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[`Unreleased`_]
+===============
+
+Added
+-----
+
+* Get User Function, using a user id, added to the :meth:`discord.user.fetch` method of the :class:`discord.user` class
+* Modify Current User
+* Get Current Guild Member
+* Leave Guild
+* Create DM
+* Create Guild DM
+
+Fixed
+-----
+
+* The documentation in the :doc:`permissions` page
+* The documentation in the :doc:`migration` page
+
 [`2.0.0`_] - November 13, 2023
 ==============================
 
@@ -244,6 +263,7 @@ Added
 * The AuthUrl class, that would return the auth url
   * Added a function to make the state for the auth url
 
+.. _Unreleased: https://github.com/disoauth/DiscoAuth/compare/v2.0.0...add/Arcader717-User-functions
 .. _Diff: https://github.com/disoauth/DiscoAuth/compare/v1.4.0...v2.0.0
 .. _2.0.0: https://github.com/disoauth/DiscoAuth/compare/v2.0.0-rc.1...v2.0.0
 .. _2.0.0-rc.1: https://github.com/disoauth/DiscoAuth/compare/v1.4.0...v2.0.0-rc.1

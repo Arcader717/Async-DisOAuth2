@@ -12,7 +12,7 @@ The permissions is imported using the :class:`permissions` class
   :linenos:
   :caption: perms.py
 
-  from DisOAuth import permissions
+  from discoauth import permissions
 
 Permissions
 -----------
@@ -23,7 +23,7 @@ To set multiple permission with the names when the :class:`permissions` class is
   :lineno-start: 3
   :caption: Multiple perms, init, name
 
-  perms = permissions(["kick_members", "ban_members"]
+  perms = permissions(["kick_members", "ban_members"])
 
 .. code-block:: python
   :lineno-start: 3
@@ -54,7 +54,7 @@ To set multiple permission with the names when the :class:`permissions` class is
 +-------------------------------------+--------+
 | stream                              | 9      |
 +-------------------------------------+--------+
-| view_channe;                        | 10     |
+| view_channel                        | 10     |
 +-------------------------------------+--------+
 | send_messages                       | 11     |
 +-------------------------------------+--------+

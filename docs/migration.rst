@@ -24,20 +24,20 @@ We can use
     :language: python
     :linenos:
 
-    from DisOAuth import auth, discord, bot, permissions
+    from discoauth import auth, discord, bot, permissions
 
 I highly suggest using the :code:`ctrl + F` shortcut, to find the old names and replace it with the new names
 
 The following list shows what classes and methods are replaced with what name
 
-* :code:`AuthUrl` --> :code:`auth`
-* :code:`discordApi` --> :code:`discord`
-* :code:`makeUrl` --> :code:`url`
-* :code:`accessToken` --> :code:`token`
-* :code:`User` --> :code:`user`
-* :code:`get_current_user` --> :code:`fetch`
-* :code:`get_user_guilds` --> :code:`guilds`
-* :code:`get_guild` --> :code:`fetch`
+* :code:`AuthUrl` --> :class:`auth`
+* :code:`discordApi` --> :class:`discord`
+* :code:`makeUrl` --> :meth:`auth.url`
+* :code:`accessToken` --> :meth:`discord.token`
+* :code:`User` --> :class:`user`
+* :code:`get_current_user` --> :meth:`discord.user.fetch`
+* :code:`get_user_guilds` --> :meth:`discord.user.guilds`
+* :code:`get_guild` --> :meth:`discord.guild.fetch`
 
 Special Cases
 =============

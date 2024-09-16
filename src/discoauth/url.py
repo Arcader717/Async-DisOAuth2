@@ -6,6 +6,8 @@ from discoauth.common import generate_token, getToken, htmlEncode, joinUrl, perm
 
 from discoauth.models import UserObj as uObj, GuildObj as gObj
 
+from discoauth.exceptions import DiscordException
+
 apiUrl = "https://discord.com/api"
 
 
@@ -106,21 +108,35 @@ class discord:
 
     class user:
         def __init__(self, token):
-            self.token = token
+            if isinstance(token, dict):
+                try:
+                    self.token = token['access_token']
+                except KeyError:
+                    raise DiscordException(token['error']) from KeyError
+            elif isinstance(token, str):
+                self.token = token
 
         
 
-        async def fetch(self) -> uObj:
-            url = apiUrl + "/users/@me"
+        async def fetch(self, 
+                        id: int | None = None,
+                        *extras) -> uObj:
+            if isinstance(id, int):
+                url = apiUrl + f"/users/{id}"
+            else:
+                url = apiUrl + "/users/@me"
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': 'Bearer ' + self.token
             }
             r = requests.get(url, headers=headers)
+            if 'raw' in extras:
+                return r.json()
             return uObj(r.json())
 
         async def guilds(self,
-                                  with_count: bool | None = False) -> List[gObj]:
+                                  with_count: bool | None = False,
+                         *extras) -> List[gObj]:
             url = apiUrl + "/users/@me/guilds"
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -133,13 +149,86 @@ class discord:
                 query['with_counts'] = False
             r = requests.get(url, headers=headers)
             guildList = []
+            if 'raw' in extras:
+                return r.json()
             for guild in r.json():
                 guildList.append(gObj(guild))
             return guildList
 
+        async def modify(self, username: str | None = None):
+            url = apiUrl + "/users/@me"
+            headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + self.token
+            }
+            query = {}
+            if isinstance(username, str):
+                query['username'] = username
+                r = requests.patch(url, headers, json=query)
+            else:
+                r = requests.patch(url, headers)
+            return r.json()
+
+        async def leaveGuild(self, guild: str | int):
+            url = apiUrl + f"/users/@me/guilds/{str(id)}"
+            headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + self.token
+            }
+            r = requests.delete(url, headers)
+            if r.status_code == '204':
+                return True
+            else:
+                return False
+
+        async def dm(self, id: str | None = None,
+                     tokens: List[str] | None = None,
+                     nicks: Dict[str, str] | None = None):
+            url = apiUrl + "/users/@me/channels"
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + self.token
+            }
+            if isinstance(id, str):
+                query = {'recipient_id': id}
+                r = requests.post(url, headers, json=query)
+                if isinstance(access_tokens, list) or isinstance(nicks, dict):
+                    raise ValueError("You can't try to make a group DM and a regular dm at the same time")
+            elif isinstance(access_tokens, list) and isinstance(nicks, dict):
+                query = {'access_tokens': tokens,
+                         'nicks': nicks}
+                r = requests.post(url, headers, json=query)
+            return r.json()
+
+        async def connections(self, id: str | None = None):
+            # Requires connections scope, for basic connections, and role_connections.write for application connections
+            if isinstance(id, None):
+                url = baseUrl + "/users/@me/connections"
+            elif isinstance(id, str):
+                url = baseUrl + f"/users/@me/applications/{id}/role-connection"
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + self.token
+            }
+            r = requests.get(url, headers)
+            return r.json()
+            
+                
+        async def modifyConnections(self, id: str):
+            url = baseUrl + f"/users/@me/applications/{id}/role-connection"
+            headers = {
+                'Content-Type': 'applcation/json',
+                'Authorization': 'Bearer ' + self.token
+            }
+            r = requests.put(url, headers)
+            return r.json()
+
     class guild:
         def __init__(self, token):
-            self.token = token
+            if isinstance(token, dict):
+                self.token = token['access_token']
+            elif isinstance(token, str):
+                self.token = token
 
         async def fetch(self,
                         id: int,

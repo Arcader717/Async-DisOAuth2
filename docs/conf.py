@@ -1,8 +1,8 @@
 project = 'DiscoAuth'
 copyright = '2023, Arcader717'
 author = 'Arcader717'
-version = '2.0'
-release = '2.0.0'
+version = '2.1'
+release = '2.1.0'
 extensions = [
   'sphinx.ext.autodoc',
   'sphinx.ext.autosummary'
